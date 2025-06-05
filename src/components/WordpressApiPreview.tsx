@@ -56,7 +56,7 @@ const WordpressApiPreview: React.FC<WordpressApiPreviewProps> = ({ onDataFetched
     try {
       const selectedData = data.filter((row) => selectedRows.includes(row.id));
       const siteName = sitecoreUrl || 'sihti';
-      const apiUrl = 'http://4.247.158.139/api/siteitem/addscpage';
+      const apiUrl = 'https://sc104sc.dev.local/api/siteitem/addscpage';
       const results = await Promise.all(selectedData.map(async (row) => {
         const body = JSON.stringify({
           Link: row.link,
