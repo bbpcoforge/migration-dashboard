@@ -1,0 +1,152 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --color-bg: #f6f6f9;
+  --color-card: #fff;
+  --color-text: #22223b;
+  --color-primary: #e11d48;
+  --color-secondary: #b91c1c;
+  --color-accent: #fbbf24;
+  --color-success: #22c55e;
+  --color-warning: #f59e42;
+  --color-error: #ef4444;
+  --color-info: #0ea5e9;
+}
+.dark {
+  --color-bg: #181a1b;
+  --color-card: #23272b;
+  --color-text: #f3f4f6;
+  --color-primary: #e11d48;
+  --color-secondary: #b91c1c;
+  --color-accent: #fbbf24;
+  --color-success: #22d3ee;
+  --color-warning: #fbbf24;
+  --color-error: #f87171;
+  --color-info: #38bdf8;
+}
+
+body {
+  font-family: 'Segoe UI', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  background: var(--color-bg);
+  color: var(--color-text);
+}
+
+/* Custom scrollbar for dashboard */
+::-webkit-scrollbar {
+  width: 8px;
+  background: #ececec;
+}
+::-webkit-scrollbar-thumb {
+  background: #b0b8c9;
+  border-radius: 4px;
+}
+
+/* Icon size utility for dashboard navigation */
+.icon-md {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+/* Fade-in animation for cards/tables */
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: none; }
+}
+.animate-fade-in {
+  animation: fade-in 0.7s cubic-bezier(0.4,0,0.2,1) both;
+}
+
+/* Enable dark mode for Tailwind (class strategy) */
+:root {
+  color-scheme: light dark;
+}
+
+/* Dashboard card utility */
+.dashboard-card {
+  border-radius: 1.25rem;
+  background: var(--color-card);
+  box-shadow: 0 6px 32px 0 rgba(225, 29, 72, 0.08);
+  border: 1px solid #ececec;
+  padding: 2rem 1.5rem;
+  margin: 2rem 0;
+  color: var(--color-text);
+  transition: background 0.2s, color 0.2s;
+}
+
+/* Section title utility */
+.section-title {
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--color-primary);
+  margin-bottom: 1.25rem;
+  letter-spacing: 0.01em;
+  font-family: 'Segoe UI', 'Inter', sans-serif;
+}
+
+/* Button utility */
+.btn-primary {
+  padding: 0.75rem 2.25rem;
+  border-radius: 0.5rem;
+  font-weight: 700;
+  color: #fff;
+  background: var(--color-primary);
+  transition: background 0.2s;
+  box-shadow: 0 2px 8px 0 rgba(225, 29, 72, 0.08);
+  font-family: 'Segoe UI', 'Inter', sans-serif;
+  letter-spacing: 0.01em;
+}
+.btn-primary:hover:not(:disabled) {
+  background: var(--color-secondary);
+}
+.btn-primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Table style for Sitecore look */
+table {
+  font-family: 'Segoe UI', 'Inter', sans-serif;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+th, td {
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--color-text);
+}
+th {
+  background: var(--color-primary);
+  color: #fff;
+  letter-spacing: 0.04em;
+  border: none;
+}
+tbody tr {
+  background: var(--color-card);
+  transition: background 0.2s;
+}
+tbody tr:nth-child(even) {
+  background: #f3f4f6;
+}
+.dark tbody tr {
+  background: var(--color-card);
+}
+.dark tbody tr:nth-child(even) {
+  background: #23272b;
+}
+tbody tr:hover {
+  background: var(--color-accent);
+  color: var(--color-primary);
+}
+td, th {
+  padding: 1rem 1.25rem;
+}
+
+/* Responsive tweaks for dashboard */
+@media (max-width: 768px) {
+  .dashboard-card {
+    padding: 1rem 0.5rem;
+    margin: 1rem 0;
+  }
+}
