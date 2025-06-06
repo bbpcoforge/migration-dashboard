@@ -32,7 +32,7 @@ const Header: React.FC = () => {
 
   return (
     <header
-      className="w-full sticky top-0 z-50 backdrop-blur-md bg-[rgba(60,16,16,0.85)] dark:bg-[rgba(30,8,8,0.85)] border-b border-[rgba(255,255,255,0.08)] shadow-lg transition-colors duration-300"
+      className="w-full sticky top-0 z-50 b backdrop-blur-md bg-[rgba(60,16,16,0.85)] dark:bg-[rgba(30,8,8,0.85)] border-b border-[rgba(255,255,255,0.08)] shadow-lg transition-colors duration-300"
       style={{
         fontFamily: "'Segoe UI', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif",
         fontSize: '2.15rem',

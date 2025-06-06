@@ -3,6 +3,23 @@ node_modules/
 
 # Build output
 .next/
+dist/
+# Production build output
+build/
+# Temporary files
+.tmp/
+# Logs
+logs/
+# Temporary files
+tmp/
+# Yarn cache
+.yarn/
+# pnpm store
+.pnpm-store/
+# Bower dependencies
+bower_components/
+# Compiled source
+lib/        
 out/
 
 # Logs

@@ -8,6 +8,7 @@ import StatusUpdates from '../components/StatusUpdates';
 import ErrorHandler from '../components/ErrorHandler';
 import SummaryReport from '../components/SummaryReport';
 import Sidebar from '../components/Sidebar';
+import WordpressApiPreview from '@components/WordpressApiPreview';
 
 const Home = () => {
   const [fileData, setFileData] = useState<any>(null);
@@ -60,9 +61,10 @@ const Home = () => {
   return (
     <div className="flex w-full">
       <Sidebar />
-      <div className="flex-1 flex flex-col items-center justify-center py-8 px-2">
+      <div className="flex-1 flex flex-col items-center justify-center">
         <div className="w-full max-w-3xl">
-          <FileUpload onFileParsed={handleFileParsed} />
+          <WordpressApiPreview />
+          {/* <FileUpload onFileParsed={handleFileParsed} />
           <Preview data={fileData} fileName={fileName} />
           {fields.length > 0 && (
             <FieldMapping fields={fields} onMappingChange={handleMappingChange} />
@@ -75,7 +77,7 @@ const Home = () => {
               <ErrorHandler error={error} />
               {summary && <SummaryReport summary={summary} />}
             </div>
-          )}
+          )} */}
         </div>
       </div>
     </div>

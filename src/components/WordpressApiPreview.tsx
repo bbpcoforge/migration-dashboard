@@ -83,10 +83,10 @@ const WordpressApiPreview: React.FC<WordpressApiPreviewProps> = ({ onDataFetched
   };
 
   return (
+    <>
     <div className="dashboard-card mb-6">
-      <div className="section-title flex items-center gap-2 mb-2">
-        <svg className="icon-md text-blue-600" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" /><path d="M8 12h8M12 8v8" /></svg>
-        1. Import from WordPress API
+      <div className="section-title flex justify-center mb-10">
+        <div className="flex flex-row w-1/4 items-center">Import from WordPress API</div>
       </div>
       <div className="flex justify-center mb-10">
         <div className="flex flex-row gap-3 w-1/2 items-center">
@@ -111,8 +111,8 @@ const WordpressApiPreview: React.FC<WordpressApiPreviewProps> = ({ onDataFetched
       {error && <div className="text-red-600 mb-2 text-center">{error}</div>}
       {data.length > 0 && (
         <>
-        <div className="text-gray-500 text-sm mb-10 text-right">
-          Showing page {currentPage} of {totalPages} ({totalItems} total pages)
+        <div className="bold-text text-gray-500 text-sm text-left my-[10px] mx-[5px] ">
+          Total {totalItems} pages found, Showing page {currentPage} of {totalPages}
         </div>
         <div className="overflow-x-auto animate-fade-in mt-8">
           <table className="min-w-full border rounded-xl overflow-hidden">
@@ -153,34 +153,25 @@ const WordpressApiPreview: React.FC<WordpressApiPreviewProps> = ({ onDataFetched
           </table>
         </div>
         <div className="flex justify-center mt-6 gap-2" style={{ marginTop: '20px' }}>
-          <button
-            className="px-4 py-2 rounded-lg border bg-gray-100 text-gray-700 font-semibold shadow-sm transition hover:bg-blue-50 hover:text-blue-700 disabled:opacity-50 disabled:cursor-not-allowed mr-1"
-            onClick={() => fetchData(currentPage - 1)}
-            disabled={currentPage <= 1 || loading}
-          >Prev</button>
+            <button className="btn-pgn px-4 py-2 mx-[3px] rounded bg-gray-200" onClick={() => fetchData(currentPage - 1)} disabled={currentPage === 1 || loading}>&lt;</button>
           {Array.from({ length: totalPages }).map((_, idx) => (
             <button
-              key={idx+1}
-              className={`px-4 py-2 rounded-lg border font-semibold shadow-sm mx-1 transition ${currentPage === idx+1 ? 'bg-blue-600 text-white border-blue-600' : 'bg-gray-100 text-gray-700 border-gray-200 hover:bg-blue-50 hover:text-blue-700'}`}
-              onClick={() => fetchData(idx+1)}
+              key={idx + 1}
+              className={`btn-pgn px-4 py-2 mx-[3px] rounded ${currentPage === idx + 1 ? "bg-pink-700 text-white" : "bg-gray-200"}`}
+              onClick={() => fetchData(idx + 1)}
               disabled={loading}
-              style={{ minWidth: 40 }}
-            >{idx+1}</button>
+            >
+              {idx + 1}
+            </button>
           ))}
-          <button
-            className="px-4 py-2 rounded-lg border bg-gray-100 text-gray-700 font-semibold shadow-sm transition hover:bg-blue-50 hover:text-blue-700 disabled:opacity-50 disabled:cursor-not-allowed ml-1"
-            onClick={() => fetchData(currentPage + 1)}
-            disabled={currentPage >= totalPages || loading}
-          >Next</button>
+          <button className="btn-pgn px-4 py-2 mx-[3px] rounded bg-gray-200" onClick={() => fetchData(currentPage + 1)} disabled={currentPage === totalPages || loading}>&gt;</button>
         </div>
         {/* Sitecore Migration Card - only show if rows are selected */}
         {selectedRows.length > 0 && (
           <div className="dashboard-card mt-8 flex flex-col items-center">
             <div className="section-title flex items-center gap-2 mb-2">
-        <svg className="icon-md text-blue-600" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" /><path d="M8 12h8M12 8v8" /></svg>
-        2. Migrate Selected Pages to Sitecore
-      </div>
-            
+                Migrate Selected Pages to Sitecore
+            </div>
             <div className="flex flex-row gap-3 w-1/2 items-center justify-center">
               <input
                 type="text"
@@ -201,11 +192,12 @@ const WordpressApiPreview: React.FC<WordpressApiPreviewProps> = ({ onDataFetched
             </div>
           </div>
         )}
-        {migrationResult && <div className={`mt-2 text-center font-semibold ${migrationResult.includes('successful') ? 'text-green-600' : 'text-red-600'}`}>{migrationResult}</div>}
-        
+        {migrationResult && <div className={`mt-2 text-center font-semibold ${migrationResult.includes('successful') ? 'successful' : 'error'}`}>{migrationResult}</div>}
+       
         </>
       )}
     </div>
+    </>
   );
 };
 

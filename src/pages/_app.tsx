@@ -1,7 +1,6 @@
 import '../styles/globals.css';
 import type { AppProps } from 'next/app';
 import Header from '../components/Header';
-import Footer from '../components/Footer';
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
@@ -9,8 +8,7 @@ function MyApp({ Component, pageProps }: AppProps) {
       <Header />
       <main className="flex-1 flex flex-row">
         <Component {...pageProps} />
-      </main>
-      <Footer />
+      </main> 
     </div>
   );
 }
