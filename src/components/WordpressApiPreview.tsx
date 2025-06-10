@@ -110,7 +110,7 @@ const WordpressApiPreview: React.FC<WordpressApiPreviewProps> = ({ onDataFetched
     try {
       const selectedData = Object.values(allSelectedRows);
       const siteName = sitecoreUrl || 'sihti';
-      const apiUrl = 'https://sihti.ntldigital.com/api/siteitem/addscpage';
+      const apiUrl = 'http://sihti.ntldigital.com/api/siteitem/addscpage';
       let successCount = 0;
       for (let i = 0; i < selectedData.length; i++) {
         const row = selectedData[i];
@@ -260,7 +260,7 @@ const WordpressApiPreview: React.FC<WordpressApiPreviewProps> = ({ onDataFetched
                   setMigrationLoading(true);
                   setMigrationResult(null);
                   try {
-                    const apiUrl = `https://sihti.ntldigital.com/api/siteitem/deletescpage/${sitecoreUrl}`;
+                    const apiUrl = `http://sihti.ntldigital.com/api/siteitem/deletescpage/${sitecoreUrl}`;
                     const res = await fetch(apiUrl, { method: 'DELETE' });
                     if (res.ok) {
                       setMigrationResult('Site deleted successfully!');
