@@ -16,6 +16,7 @@ const WordpressApiPreview: React.FC<WordpressApiPreviewProps> = ({ onDataFetched
   const [sitecoreUrl, setSitecoreUrl] = useState('');
   const [migrationLoading, setMigrationLoading] = useState(false);
   const [migrationResult, setMigrationResult] = useState<string | null>(null);
+  const [migrationProgress, setMigrationProgress] = useState(0);
 
   const fetchData = async (pageNum = 1) => {
     setError('');
@@ -49,33 +50,44 @@ const WordpressApiPreview: React.FC<WordpressApiPreviewProps> = ({ onDataFetched
     else setSelectedRows(data.map((row) => row.id));
   };
 
-  // Post selected rows to Sitecore migration API (parallel for each row)
+  // Post selected rows to Sitecore migration API (sequential for each row)
   const handleMigrate = async () => {
     setMigrationLoading(true);
     setMigrationResult(null);
+    let progress = 0;
     try {
       const selectedData = data.filter((row) => selectedRows.includes(row.id));
       const siteName = sitecoreUrl || 'sihti';
-      const apiUrl = 'https://sc104sc.dev.local/api/siteitem/addscpage';
-      const results = await Promise.all(selectedData.map(async (row) => {
+      const apiUrl = 'https://sihti.centralindia.cloudapp.azure.com/api/siteitem/addscpage';
+      let successCount = 0;
+      for (let i = 0; i < selectedData.length; i++) {
+        const row = selectedData[i];
         const body = JSON.stringify({
           Link: row.link,
           Content: row.content?.rendered || '',
           SiteName: siteName
         });
-        const res = await fetch(apiUrl, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body
-        });
-        return res.ok;
-      }));
-      if (results.every(r => r)) {
-        setMigrationResult('Migration successful!');
-      } else {
-        setMigrationResult('Some migrations failed.');
+        try {
+          const res = await fetch(apiUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body
+          });
+          if (res.ok) successCount++;
+        } catch (e) {
+          // continue to next
+        }
+        progress = Math.round(((i + 1) / selectedData.length) * 100);
+        setMigrationProgress(progress);
       }
-    } catch (err: any) {
+      if (successCount === selectedData.length) {
+        setMigrationResult('Migration successful!');
+      } else if (successCount > 0) {
+        setMigrationResult('Some migrations failed.');
+      } else {
+        setMigrationResult('Migration failed. Please check the Sitecore API URL and try again.');
+      }
+    } catch (err) {
       setMigrationResult('Migration failed. Please check the Sitecore API URL and try again.');
     } finally {
       setMigrationLoading(false);
@@ -189,7 +201,44 @@ const WordpressApiPreview: React.FC<WordpressApiPreviewProps> = ({ onDataFetched
               >
                 {migrationLoading ? 'Migrating...' : `Migrate ${selectedRows.length} Selected`}
               </button>
+              <button
+                className="btn-primary btn-danger px-3 py-2 rounded-lg h-full text-base font-semibold whitespace-nowrap transition disabled:opacity-60 disabled:cursor-not-allowed"
+                onClick={async () => {
+                  if (!sitecoreUrl) return;
+                  setMigrationLoading(true);
+                  setMigrationResult(null);
+                  try {
+                    const apiUrl = `https://sihti.centralindia.cloudapp.azure.com/api/siteitem/deletescpage/${sitecoreUrl}`;
+                    const res = await fetch(apiUrl, { method: 'DELETE' });
+                    if (res.ok) {
+                      setMigrationResult('Site deleted successfully!');
+                    } else {
+                      setMigrationResult('Failed to delete site.');
+                    }
+                  } catch (err) {
+                    setMigrationResult('Failed to delete site.');
+                  } finally {
+                    setMigrationLoading(false);
+                  }
+                }}
+                disabled={migrationLoading || !sitecoreUrl}
+                style={{ minHeight: '36px', fontSize: '0.97rem', backgroundColor: '#e53e3e', color: 'white' }}
+              >
+                Delete Site
+              </button>
             </div>
+            {/* Progress Bar */}
+            {migrationLoading && (
+              <div className="w-1/2 mt-4">
+                <div className="progress-bar-container rounded-full overflow-hidden">
+                  <div
+                    className="progress-bar h-full transition-all duration-300"
+                    style={{ width: `${migrationProgress}%` }}
+                  ></div>
+                </div>
+                <div className="text-center text-xs mt-1 text-gray-600">{migrationProgress}%</div>
+              </div>
+            )}
           </div>
         )}
         {migrationResult && <div className={`mt-2 text-center font-semibold ${migrationResult.includes('successful') ? 'successful' : 'error'}`}>{migrationResult}</div>}
