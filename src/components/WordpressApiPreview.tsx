@@ -18,6 +18,13 @@ const WordpressApiPreview: React.FC<WordpressApiPreviewProps> = ({ onDataFetched
   const [migrationResult, setMigrationResult] = useState<string | null>(null);
   const [migrationProgress, setMigrationProgress] = useState(0);
 
+  // Store all selected row details across all pages
+  const [allSelectedRows, setAllSelectedRows] = useState<{ [id: number]: any }>({});
+
+  // Store all loaded rows by id (across all pages)
+  const [allLoadedRows, setAllLoadedRows] = useState<{ [id: number]: any }>({});
+
+  // When fetching data, add to allLoadedRows
   const fetchData = async (pageNum = 1) => {
     setError('');
     setLoading(true);
@@ -32,6 +39,12 @@ const WordpressApiPreview: React.FC<WordpressApiPreviewProps> = ({ onDataFetched
       setTotalItems(Number(res.headers.get('x-wp-total')) || json.length);
       setCurrentPage(pageNum);
       onDataFetched?.(json);
+      // Add loaded rows to allLoadedRows
+      setAllLoadedRows((prev) => {
+        const copy = { ...prev };
+        json.forEach((row: any) => { copy[row.id] = row; });
+        return copy;
+      });
     } catch (err: any) {
       setError('Could not fetch data from the provided URL.');
     } finally {
@@ -39,24 +52,63 @@ const WordpressApiPreview: React.FC<WordpressApiPreviewProps> = ({ onDataFetched
     }
   };
 
-  // Handle checkbox selection
+  // Update selectedRows and allSelectedRows when selecting/deselecting a row
   const handleSelectRow = (id: number) => {
-    setSelectedRows((prev) =>
-      prev.includes(id) ? prev.filter((rowId) => rowId !== id) : [...prev, id]
-    );
-  };
-  const handleSelectAll = () => {
-    if (selectedRows.length === data.length) setSelectedRows([]);
-    else setSelectedRows(data.map((row) => row.id));
+    setSelectedRows((prev) => {
+      if (prev.includes(id)) {
+        // Deselect
+        setAllSelectedRows((old) => {
+          const copy = { ...old };
+          delete copy[id];
+          return copy;
+        });
+        return prev.filter((rowId) => rowId !== id);
+      } else {
+        // Select
+        setAllSelectedRows((old) => {
+          const copy = { ...old };
+          // Use allLoadedRows for details
+          if (allLoadedRows[id]) copy[id] = allLoadedRows[id];
+          return copy;
+        });
+        return [...prev, id];
+      }
+    });
   };
 
-  // Post selected rows to Sitecore migration API (sequential for each row)
+  // Select/deselect all rows on current page
+  const handleSelectAll = () => {
+    if (selectedRows.length === data.length) {
+      // Deselect all on this page
+      setSelectedRows([]);
+      setAllSelectedRows((old) => {
+        const copy = { ...old };
+        data.forEach((row) => { delete copy[row.id]; });
+        return copy;
+      });
+    } else {
+      // Select all on this page
+      setSelectedRows(data.map((row) => row.id));
+      setAllSelectedRows((old) => {
+        const copy = { ...old };
+        data.forEach((row) => { if (allLoadedRows[row.id]) copy[row.id] = allLoadedRows[row.id]; });
+        return copy;
+      });
+    }
+  };
+
+  // When page changes, update selectedRows to reflect only those on current page
+  React.useEffect(() => {
+    setSelectedRows(data.filter((row) => allSelectedRows[row.id]).map((row) => row.id));
+  }, [data, allSelectedRows]);
+
+  // Post all selected rows (from all pages) to Sitecore migration API
   const handleMigrate = async () => {
     setMigrationLoading(true);
     setMigrationResult(null);
     let progress = 0;
     try {
-      const selectedData = data.filter((row) => selectedRows.includes(row.id));
+      const selectedData = Object.values(allSelectedRows);
       const siteName = sitecoreUrl || 'sihti';
       const apiUrl = 'https://sihti.centralindia.cloudapp.azure.com/api/siteitem/addscpage';
       let successCount = 0;
@@ -179,7 +231,7 @@ const WordpressApiPreview: React.FC<WordpressApiPreviewProps> = ({ onDataFetched
           <button className="btn-pgn px-4 py-2 mx-[3px] rounded bg-gray-200" onClick={() => fetchData(currentPage + 1)} disabled={currentPage === totalPages || loading}>&gt;</button>
         </div>
         {/* Sitecore Migration Card - only show if rows are selected */}
-        {selectedRows.length > 0 && (
+        {Object.keys(allSelectedRows).length > 0 && (
           <div className="dashboard-card mt-8 flex flex-col items-center">
             <div className="section-title flex items-center gap-2 mb-2">
                 Migrate Selected Pages to Sitecore
@@ -196,10 +248,10 @@ const WordpressApiPreview: React.FC<WordpressApiPreviewProps> = ({ onDataFetched
               <button
                 className="btn-primary px-3 py-2 rounded-lg h-full text-base font-semibold whitespace-nowrap transition disabled:opacity-60 disabled:cursor-not-allowed"
                 onClick={handleMigrate}
-                disabled={migrationLoading || !sitecoreUrl || selectedRows.length === 0}
+                disabled={migrationLoading || !sitecoreUrl || Object.keys(allSelectedRows).length === 0}
                 style={{ minHeight: '36px', fontSize: '0.97rem' }}
               >
-                {migrationLoading ? 'Migrating...' : `Migrate ${selectedRows.length} Selected`}
+                {migrationLoading ? 'Migrating...' : `Migrate ${Object.keys(allSelectedRows).length} Selected`}
               </button>
               <button
                 className="btn-primary btn-danger px-3 py-2 rounded-lg h-full text-base font-semibold whitespace-nowrap transition disabled:opacity-60 disabled:cursor-not-allowed"
