@@ -154,13 +154,13 @@ const WordpressApiPreview: React.FC<WordpressApiPreviewProps> = ({ onDataFetched
 
   return (
     <>
-    <div className="dashboard-card mb-6">
-      <div className="section-title flex justify-center mb-10">
-        <div className="flex flex-row w-1/4 items-center">Source System</div>
-      </div>
-      <div className="flex justify-center mb-10">
-        <div className="flex flex-row gap-3 w-1/2 items-center">
-          <div>
+    <div className="">
+      
+      <div className="flex flex-row flex-wrap gap-8 mb-8 w-full max-w-6xl mx-auto justify-center">
+        {/* Source System Card */}
+        <div className="dashboard-card flex-1 min-w-[320px] max-w-[420px] flex flex-col items-center w-full sm:w-auto">
+          <div className="section-title flex justify-center mb-6 text-lg font-semibold">Source System</div>
+          <div className="flex flex-col gap-6 w-full items-center">
             <select value={selectedOption} onChange={handleChange}>
               <option key="default" value="">-- Select a source --</option>
               <option key="wp" value="WordPress">WordPress</option>
@@ -175,110 +175,46 @@ const WordpressApiPreview: React.FC<WordpressApiPreviewProps> = ({ onDataFetched
               <option key="dotnet" value="DotNet">.Net</option>
               <option key="php" value="PHP">PHP</option>
             </select>
-          </div>
-
-          <input
-            type="text"
-            className="px-3 py-2 bg-white outline-none text-base text-gray-800 placeholder-gray-400 rounded-lg border border-blue-200 focus:ring-2 focus:ring-blue-400 transition w-full"
-            placeholder={`Enter ${selectedOption} website URL (e.g. https://example.com)`}
-            value={url}
-            onChange={e => setUrl(e.target.value)}
-            style={{ minWidth: 0, minHeight: '30px', marginRight: '8px', fontSize: '0.97rem', borderRadius: '0.375rem', padding: '0.5rem 0.75rem' }}
-          />
-          <button
-            className="btn-primary px-3 py-2 rounded-lg h-full text-base font-semibold whitespace-nowrap transition disabled:opacity-60 disabled:cursor-not-allowed"
-            onClick={() => fetchData(1)}
-            disabled={loading || !url}
-            style={{ minHeight: '36px', fontSize: '0.97rem' }}
-          >
-            {loading ? 'Loading...' : 'Fetch Pages'}
-          </button>
-        </div>
-      </div>
-      {error && <div className="text-red-600 mb-2 text-center">{error}</div>}
-      {data.length > 0 && (
-        <>
-        <div className="bold-text text-gray-500 text-sm text-left my-[10px] mx-[5px] ">
-          Total {totalItems} pages found, Showing page {currentPage} of {totalPages}
-        </div>
-        <div className="overflow-x-auto animate-fade-in mt-8">
-          <table className="min-w-full border rounded-xl overflow-hidden">
-            <thead>
-              <tr>
-                <th className="text-left w-10">
-                  <input
-                    type="checkbox"
-                    checked={selectedRows.length === data.length && data.length > 0}
-                    onChange={handleSelectAll}
-                  />
-                </th>
-                <th className="text-left">Page ID</th>
-                <th className="text-left">Title</th>
-                <th className="text-left">Slug</th>
-                <th className="text-left">Page URL</th>
-                <th className="text-left">Date</th>
-              </tr>
-            </thead>
-            <tbody>
-              {data.map((page: any) => (
-                <tr key={page.id} className={selectedRows.includes(page.id) ? 'bg-blue-50' : ''}>
-                  <td>
-                    <input
-                      type="checkbox"
-                      checked={selectedRows.includes(page.id)}
-                      onChange={() => handleSelectRow(page.id)}
-                    />
-                  </td>
-                  <td>{page.id}</td>
-                  <td>{page.title?.rendered || ''}</td>
-                  <td>{page.slug}</td>
-                  <td><a href={page.link} className="text-blue-600 underline" target="_blank" rel="noopener noreferrer">{page.link}</a></td>
-                  <td>{page.date ? new Date(page.date).toLocaleDateString('en-US') : ''}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-        <div className="flex justify-center mt-6 gap-2" style={{ marginTop: '20px' }}>
-            <button className="btn-pgn px-4 py-2 mx-[3px] rounded bg-gray-200" onClick={() => fetchData(currentPage - 1)} disabled={currentPage === 1 || loading}>&lt;</button>
-          {Array.from({ length: totalPages }).map((_, idx) => (
+            <input
+              type="text"
+              placeholder={`Enter ${selectedOption} website URL (e.g. https://example.com)`}
+              value={url}
+              onChange={e => setUrl(e.target.value)}
+              style={{ minWidth: 0, fontSize: '0.97rem', borderRadius: '0.375rem', padding: '0.5rem 0.75rem' }}
+            />
             <button
-              key={idx + 1}
-              className={`btn-pgn px-4 py-2 mx-[3px] rounded ${currentPage === idx + 1 ? "bg-pink-700 text-white" : "bg-gray-200"}`}
-              onClick={() => fetchData(idx + 1)}
-              disabled={loading}
+              className="btn-primary px-3 py-2 rounded-lg w-full text-base font-semibold whitespace-nowrap transition disabled:opacity-60 disabled:cursor-not-allowed mb-2"
+              onClick={() => fetchData(1)}
+              disabled={loading || !url}
+              style={{ minHeight: '44px', fontSize: '0.97rem' }}
             >
-              {idx + 1}
+              {loading ? 'Loading...' : 'Fetch Pages'}
             </button>
-          ))}
-          <button className="btn-pgn px-4 py-2 mx-[3px] rounded bg-gray-200" onClick={() => fetchData(currentPage + 1)} disabled={currentPage === totalPages || loading}>&gt;</button>
+            {error && <div className="text-red-600 mb-2 text-center w-full">{error}</div>}
+          </div>
         </div>
-        {/* Sitecore Migration Card - only show if rows are selected */}
-        {Object.keys(allSelectedRows).length > 0 && (
-            <>
-          <div className="dashboard-card mt-8 flex flex-col items-center">
-            <div className="section-title flex items-center gap-2 mb-2">
-                Migrate Selected Pages to Sitecore
-            </div>
-            <div className="flex flex-row gap-3 w-1/2 items-center justify-center">
-              <input
-                type="text"
-                className="px-3 py-2 bg-white outline-none text-base text-gray-800 placeholder-gray-400 rounded-lg border border-blue-200 focus:ring-2 focus:ring-blue-400 transition w-full"
-                placeholder="Enter Sitecore Site Name (e.g. sihti)"
-                value={sitecoreUrl}
-                onChange={e => setSitecoreUrl(e.target.value)}
-                style={{ minWidth: 0, minHeight: '30px', marginRight: '8px', fontSize: '0.97rem', borderRadius: '0.375rem', padding: '0.5rem 0.75rem' }}
-              />
+        {/* Migrate System Card */}
+        <div className="dashboard-card flex-1 min-w-[320px] max-w-[420px] flex flex-col items-center w-full sm:w-auto">
+          <div className="section-title flex justify-center mb-6 text-lg font-semibold">Migrate to Sitecore</div>
+          <div className="flex flex-col gap-6 w-full items-center">
+            <input
+              type="text"
+              placeholder="Enter Sitecore Site Name (e.g. sihti)"
+              value={sitecoreUrl}
+              onChange={e => setSitecoreUrl(e.target.value)}
+              style={{ minWidth: 0, fontSize: '0.97rem', borderRadius: '0.375rem', padding: '0.5rem 0.75rem' }}
+            />
+            <div className="flex flex-row gap-4 w-full items-center justify-center mb-2">
               <button
-                className="btn-primary px-3 py-2 rounded-lg h-full text-base font-semibold whitespace-nowrap transition disabled:opacity-60 disabled:cursor-not-allowed"
+                className="btn-primary px-3 py-2 rounded-lg w-full text-base font-semibold whitespace-nowrap transition disabled:opacity-60 disabled:cursor-not-allowed"
                 onClick={handleMigrate}
                 disabled={migrationLoading || !sitecoreUrl || Object.keys(allSelectedRows).length === 0}
-                style={{ minHeight: '36px', fontSize: '0.97rem' }}
+                style={{ minHeight: '44px', fontSize: '0.97rem' }}
               >
                 {migrationLoading ? 'Migrating...' : `Migrate ${Object.keys(allSelectedRows).length} Selected`}
               </button>
               <button
-                className="btn-primary btn-danger px-3 py-2 rounded-lg h-full text-base font-semibold whitespace-nowrap transition disabled:opacity-60 disabled:cursor-not-allowed"
+                className="btn-primary btn-danger px-3 py-2 rounded-lg w-full text-base font-semibold whitespace-nowrap transition disabled:opacity-60 disabled:cursor-not-allowed"
                 onClick={async () => {
                   if (!sitecoreUrl) return;
                   setMigrationLoading(true);
@@ -298,14 +234,14 @@ const WordpressApiPreview: React.FC<WordpressApiPreviewProps> = ({ onDataFetched
                   }
                 }}
                 disabled={migrationLoading || !sitecoreUrl}
-                style={{ minHeight: '36px', fontSize: '0.97rem', backgroundColor: '#e53e3e', color: 'white' }}
+                style={{ minHeight: '44px', fontSize: '0.97rem', backgroundColor: '#e53e3e', color: 'white' }}
               >
                 Delete Site
               </button>
             </div>
             {/* Progress Bar */}
             {migrationLoading && (
-              <div className="w-1/2 mt-4">
+              <div className="w-full mt-2">
                 <div className="progress-bar-container rounded-full overflow-hidden">
                   <div
                     className="progress-bar h-full transition-all duration-300"
@@ -314,12 +250,70 @@ const WordpressApiPreview: React.FC<WordpressApiPreviewProps> = ({ onDataFetched
                 </div>
                 <div className="text-center text-xs mt-1 text-gray-600">{migrationProgress}%</div>
               </div>
-            )}   
+            )}
+            {migrationResult && <div className={`mt-2 text-center font-semibold w-full ${migrationResult.includes('successful') ? 'successful' : 'error'}`}>{migrationResult}</div>}
           </div>
-          {migrationResult && <div className={`mt-2 text-center font-semibold ${migrationResult.includes('successful') ? 'successful' : 'error'}`}>{migrationResult}</div>} 
-          </>
-        )}
-        </>
+        </div>
+      </div>
+      {/* Table below the cards */}
+      {data.length > 0 && (
+        <div className="w-full max-w-6xl mx-auto">
+          <div className="bold-text text-gray-500 text-sm text-left my-[10px] mx-[5px] ">
+            Total {totalItems} pages found, Showing page {currentPage} of {totalPages}
+          </div>
+          <div className="overflow-x-auto animate-fade-in mt-4">
+            <table className="min-w-full border rounded-xl overflow-hidden">
+              <thead>
+                <tr>
+                  <th className="text-left w-10">
+                    <input
+                      type="checkbox"
+                      checked={selectedRows.length === data.length && data.length > 0}
+                      onChange={handleSelectAll}
+                    />
+                  </th>
+                  <th className="text-left">Page ID</th>
+                  <th className="text-left">Title</th>
+                  <th className="text-left">Slug</th>
+                  <th className="text-left">Page URL</th>
+                  <th className="text-left">Date</th>
+                </tr>
+              </thead>
+              <tbody>
+                {data.map((page: any) => (
+                  <tr key={page.id} className={selectedRows.includes(page.id) ? 'bg-blue-50' : ''}>
+                    <td>
+                      <input
+                        type="checkbox"
+                        checked={selectedRows.includes(page.id)}
+                        onChange={() => handleSelectRow(page.id)}
+                      />
+                    </td>
+                    <td>{page.id}</td>
+                    <td>{page.title?.rendered || ''}</td>
+                    <td>{page.slug}</td>
+                    <td><a href={page.link} className="text-blue-600 underline" target="_blank" rel="noopener noreferrer">{page.link}</a></td>
+                    <td>{page.date ? new Date(page.date).toLocaleDateString('en-US') : ''}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <div className="flex justify-center mt-6 gap-2" style={{ marginTop: '20px' }}>
+            <button className="btn-pgn px-4 py-2 mx-[3px] rounded bg-gray-200" onClick={() => fetchData(currentPage - 1)} disabled={currentPage === 1 || loading}>&lt;</button>
+            {Array.from({ length: totalPages }).map((_, idx) => (
+              <button
+                key={idx + 1}
+                className={`btn-pgn px-4 py-2 mx-[3px] rounded ${currentPage === idx + 1 ? "bg-pink-700 text-white" : "bg-gray-200"}`}
+                onClick={() => fetchData(idx + 1)}
+                disabled={loading}
+              >
+                {idx + 1}
+              </button>
+            ))}
+            <button className="btn-pgn px-4 py-2 mx-[3px] rounded bg-gray-200" onClick={() => fetchData(currentPage + 1)} disabled={currentPage === totalPages || loading}>&gt;</button>
+          </div>
+        </div>
       )}
     </div>
     </>

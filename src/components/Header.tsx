@@ -31,20 +31,20 @@ const Header: React.FC = () => {
 
   return (
     <header
-      className="w-full sticky top-0 z-50 b backdrop-blur-md bg-[rgba(60,16,16,0.85)] dark:bg-[rgba(30,8,8,0.85)] border-b border-[rgba(255,255,255,0.08)] shadow-lg transition-colors duration-300"
+      className="w-full sticky top-0 z-40 b backdrop-blur-md bg-[rgba(60,16,16,0.85)] dark:bg-[rgba(30,8,8,0.85)] border-b border-[rgba(255,255,255,0.08)] shadow-lg transition-colors duration-300"
       style={{
         fontFamily: "'Segoe UI', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif",
-        fontSize: '2.15rem',
+        fontSize: '2rem',
         letterSpacing: '0.01em',
       }}
     >
       <div className="max-w-7xl mx-auto flex items-center justify-between px-6 py-4 min-h-[80px]">
         {/* Left: Logo/Brand */}
         <div className="flex items-center gap-4">
-          <span className="rounded-full bg-white/10 hadow-md" style={{padding: '1rem', marginTop: '0.5rem'}}>
+          <span className="rounded-full bg-white/10 hadow-md" style={{padding: '.5rem', marginTop: '0.2rem'}}>
             <SiSitecore className="w-10 h-10 text-[var(--color-card)]" />
           </span>
-          <span className="text-3xl font-extrabold tracking-tight mx-24 text-[var(--color-card)] drop-shadow-sm">Migration Dashboard</span>
+          <span className="text-3xl font-extrabold tracking-tight mx-20 text-[var(--color-card)] drop-shadow-sm">Migration Dashboard</span>
         </div>
         
         {/* Right: Dark mode toggle */}
