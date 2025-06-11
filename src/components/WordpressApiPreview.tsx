@@ -17,7 +17,9 @@ const WordpressApiPreview: React.FC<WordpressApiPreviewProps> = ({ onDataFetched
   const [migrationLoading, setMigrationLoading] = useState(false);
   const [migrationResult, setMigrationResult] = useState<string | null>(null);
   const [migrationProgress, setMigrationProgress] = useState(0);
-
+  const [selectedOption, setSelectedOption] = useState('');
+  
+  
   // Store all selected row details across all pages
   const [allSelectedRows, setAllSelectedRows] = useState<{ [id: number]: any }>({});
 
@@ -50,6 +52,10 @@ const WordpressApiPreview: React.FC<WordpressApiPreviewProps> = ({ onDataFetched
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedOption(event.target.value);
   };
 
   // Update selectedRows and allSelectedRows when selecting/deselecting a row
@@ -150,14 +156,31 @@ const WordpressApiPreview: React.FC<WordpressApiPreviewProps> = ({ onDataFetched
     <>
     <div className="dashboard-card mb-6">
       <div className="section-title flex justify-center mb-10">
-        <div className="flex flex-row w-1/4 items-center">Import from WordPress API</div>
+        <div className="flex flex-row w-1/4 items-center">Source System</div>
       </div>
       <div className="flex justify-center mb-10">
         <div className="flex flex-row gap-3 w-1/2 items-center">
+          <div>
+            <select value={selectedOption} onChange={handleChange}>
+              <option key="default" value="">-- Select a source --</option>
+              <option key="wp" value="WordPress">WordPress</option>
+              <option key="sc" value="Sitecore">Sitecore</option>
+              <option key="aem" value="AEM">Adobe Experience Manager</option>
+              <option key="sf" value="Sitefinity">Sitefinity</option>
+              <option key="drupal" value="Drupal">Drupal</option>
+              <option key="joomla" value="Joomla">Joomla</option>
+              <option key="umbraco" value="Umbraco">Umbraco</option>
+              <option key="kentico" value="Kentico">Kentico</option>
+              <option key="contentful" value="Contentful">Contentful</option>
+              <option key="dotnet" value="DotNet">.Net</option>
+              <option key="php" value="PHP">PHP</option>
+            </select>
+          </div>
+
           <input
             type="text"
             className="px-3 py-2 bg-white outline-none text-base text-gray-800 placeholder-gray-400 rounded-lg border border-blue-200 focus:ring-2 focus:ring-blue-400 transition w-full"
-            placeholder="Enter WordPress site URL"
+            placeholder={`Enter ${selectedOption} website URL (e.g. https://example.com)`}
             value={url}
             onChange={e => setUrl(e.target.value)}
             style={{ minWidth: 0, minHeight: '30px', marginRight: '8px', fontSize: '0.97rem', borderRadius: '0.375rem', padding: '0.5rem 0.75rem' }}
