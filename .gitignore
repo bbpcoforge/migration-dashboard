@@ -2,7 +2,7 @@
 node_modules/
 
 # Build output
-.next/
+
 dist/
 # Production build output
 build/

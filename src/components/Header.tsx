@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { FaRegChartBar, FaExchangeAlt, FaFileAlt, FaCog } from 'react-icons/fa';
 import { SiSitecore } from 'react-icons/si';
 import { FiSun, FiMoon } from 'react-icons/fi';
 

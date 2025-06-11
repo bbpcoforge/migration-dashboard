@@ -96,7 +96,7 @@ const WordpressApiPreview: React.FC<WordpressApiPreviewProps> = ({ onDataFetched
       });
     }
   };
-
+  
   // When page changes, update selectedRows to reflect only those on current page
   React.useEffect(() => {
     setSelectedRows(data.filter((row) => allSelectedRows[row.id]).map((row) => row.id));
@@ -232,6 +232,7 @@ const WordpressApiPreview: React.FC<WordpressApiPreviewProps> = ({ onDataFetched
         </div>
         {/* Sitecore Migration Card - only show if rows are selected */}
         {Object.keys(allSelectedRows).length > 0 && (
+            <>
           <div className="dashboard-card mt-8 flex flex-col items-center">
             <div className="section-title flex items-center gap-2 mb-2">
                 Migrate Selected Pages to Sitecore
@@ -290,11 +291,11 @@ const WordpressApiPreview: React.FC<WordpressApiPreviewProps> = ({ onDataFetched
                 </div>
                 <div className="text-center text-xs mt-1 text-gray-600">{migrationProgress}%</div>
               </div>
-            )}
+            )}   
           </div>
+          {migrationResult && <div className={`mt-2 text-center font-semibold ${migrationResult.includes('successful') ? 'successful' : 'error'}`}>{migrationResult}</div>} 
+          </>
         )}
-        {migrationResult && <div className={`mt-2 text-center font-semibold ${migrationResult.includes('successful') ? 'successful' : 'error'}`}>{migrationResult}</div>}
-       
         </>
       )}
     </div>
